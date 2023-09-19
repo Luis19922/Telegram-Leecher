@@ -1,3 +1,5 @@
+# copyright 2023 © Xron Trix | https://github.com/Xrontrix10
+
 
 import logging
 from datetime import datetime
@@ -7,17 +9,17 @@ from colab_leecher.utility.handler import cancelTask
 from colab_leecher.utility.variables import Transfer, Paths
 from colab_leecher.utility.helper import speedETA, getTime, sizeUnit, status_bar
 
+
 async def media_Identifier(link):
     parts = link.split("/")
-    message_id = parts[-1]
+    message_id, message = parts[-1], None
     msg_chat_id = "-100" + parts[4]
     message_id, msg_chat_id = int(message_id), int(msg_chat_id)
-    message = await bot.get_messages(msg_chat_id, message_id)
-try:
-message = await colab_bot.get_messages(msg_chat_id, message_id)
+    try:
+        message = await colab_bot.get_messages(msg_chat_id, message_id)
     except Exception as e:
         logging.error(f"Error getting messages {e}")
-        
+
     media = (
         message.document  # type: ignore
         or message.photo  # type: ignore
@@ -35,15 +37,15 @@ message = await colab_bot.get_messages(msg_chat_id, message_id)
 
 
 async def download_progress(current, total):
-    speed_string, eta, percentage = speed_eta(start_time, current, total)
+    speed_string, eta, percentage = speedETA(start_time, current, total)
 
     await status_bar(
         down_msg=down_msg,
         speed=speed_string,
         percentage=percentage,
-        eta=convert_seconds(eta),
-        done=size_measure(sum(down_bytes) + current),
-        left=size_measure(folder_info[0]),
+        eta=getTime(eta),
+        done=sizeUnit(sum(Transfer.down_bytes) + current),
+        left=sizeUnit(Transfer.total_down_size),
         engine="Pyrogram 💥",
     )
 
@@ -52,14 +54,16 @@ async def TelegramDownload(link, num):
     global start_time, down_msg, TRANSFER_INFO
     media, message = await media_Identifier(link)
     if media is not None:
-        name = media.file_name if hasattr(media, "file_name") else "None"  # type: ignore
+        name = media.file_name if hasattr(  # type: ignore
+            media, "file_name") else "None"
     else:
-        raise Exception("Couldn't Download Telegram Message")
+        logging.error("Couldn't Download Telegram Message")
+        await cancelTask("Couldn't Download Telegram Message")
+        return
 
     down_msg = f"<b>📥 DOWNLOADING FROM » </b><i>🔗Link {str(num).zfill(2)}</i>\n\n<code>{name}</code>\n"
-    start_time = datetime.datetime.now()
-    file_path = ospath.join(d_fol_path, name)
-    await message.download(  # type: ignore
-        progress=download_progress, in_memory=False, file_name=file_path
-    )
-    down_bytes.append(media.file_size)
+    start_time = datetime.now()
+    file_path = ospath.join(Paths.down_path, name)
+    
+    await message.download(progress=download_progress, in_memory=False, file_name=file_path) # type: ignore
+    Transfer.down_bytes.append(media.file_size)
