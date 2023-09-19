@@ -1,3 +1,4 @@
+
 import logging
 from datetime import datetime
 from os import path as ospath
@@ -48,7 +49,7 @@ async def download_progress(current, total):
 
 
 async def TelegramDownload(link, num):
-    global start_time, down_msg
+    global start_time, down_msg, TRANSFER_INFO
     media, message = await media_Identifier(link)
     if media is not None:
         name = media.file_name if hasattr(media, "file_name") else "None"  # type: ignore
