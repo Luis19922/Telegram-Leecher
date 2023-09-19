@@ -6,15 +6,17 @@ from colab_leecher.utility.handler import cancelTask
 from colab_leecher.utility.variables import Transfer, Paths
 from colab_leecher.utility.helper import speedETA, getTime, sizeUnit, status_bar
 
-
-
 async def media_Identifier(link):
     parts = link.split("/")
     message_id = parts[-1]
     msg_chat_id = "-100" + parts[4]
     message_id, msg_chat_id = int(message_id), int(msg_chat_id)
     message = await bot.get_messages(msg_chat_id, message_id)
-
+try:
+message = await colab_bot.get_messages(msg_chat_id, message_id)
+    except Exception as e:
+        logging.error(f"Error getting messages {e}")
+        
     media = (
         message.document  # type: ignore
         or message.photo  # type: ignore
@@ -60,4 +62,3 @@ async def TelegramDownload(link, num):
         progress=download_progress, in_memory=False, file_name=file_path
     )
     down_bytes.append(media.file_size)
-    
