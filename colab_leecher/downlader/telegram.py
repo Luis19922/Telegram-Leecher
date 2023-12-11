@@ -13,8 +13,8 @@ from colab_leecher.utility.helper import speedETA, getTime, sizeUnit, status_bar
 async def media_Identifier(link):
     parts = link.split("/")
     message_id, message = parts[-1], None
-    msg_chat_id = "-100" + parts[4]
-    message_id, msg_chat_id = int(message_id), int(msg_chat_id)
+    msg_chat_file_id = "-100" + parts[4]
+    message_id, msg_chat_file_id = int(message_id), int(msg_chat_file_id)
     try:
         message = await colab_bot.get_messages(msg_chat_id, message_id)
     except Exception as e:
