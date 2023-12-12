@@ -12,7 +12,7 @@ from colab_leecher.utility.helper import speedETA, getTime, sizeUnit, status_bar
 
 async def media_Identifier(link):
     parts = link.split("/")
-    message_id, message = parts[-1], none
+    message_id, message = parts[-1], None
     msg_chat_file_id = "-100" + parts[4]
     message_id, msg_chat_file_id = int(message_id), int(msg_chat_file_id)
     try:
