@@ -54,7 +54,7 @@ async def TelegramDownload(link, num):
     global start_time, down_msg, TRANSFER_INFO
     media, message = await media_Identifier(link)
     if media is not None:
-        name = media.file_name if hasattr(  # type: ignore
+        name = media.mime_type if hasattr(  # type: ignore
             media, "file_name") else "None"
     else:
         logging.error("Couldn't Download Telegram Message")
