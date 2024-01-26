@@ -5,7 +5,7 @@ google-api-python-client
 google-auth-httplib2
 google-auth-oauthlib
 httpx
-aria2py==1.5.0
+Pyrogram==2.0.80
 requests
 tgcrypto
 uvloop
